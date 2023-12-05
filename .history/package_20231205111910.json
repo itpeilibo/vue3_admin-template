@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint src",
     "fix": "eslint src --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
   },
   "dependencies": {
     "vue": "^3.3.8"
