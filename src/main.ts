@@ -8,6 +8,8 @@ import '@/styles/index.scss'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 // svg插件需要配置代码
 import 'virtual:svg-icons-register'
+// 引入路由
+import router from '@/router'
 import App from '@/App.vue'
 // 获取应用实例对象
 const app = createApp(App)
@@ -17,11 +19,13 @@ import gloablComponent from '@/components/index.ts'
 // 安装自定义插件
 app.use(gloablComponent)
 
+// 注册模板路由
+app.use(router)
+
 // 安装element-plus插件
 app.use(ElementPlus, {
   locale: zhCn,
 })
-console.log(import.meta.env)
 
 // 将应用挂载到挂载点上
 app.mount('#app')
