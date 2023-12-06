@@ -10,6 +10,8 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import 'virtual:svg-icons-register'
 // 引入路由
 import router from '@/router'
+// 仓库
+import pinia from '@/store/index.ts'
 import App from '@/App.vue'
 // 获取应用实例对象
 const app = createApp(App)
@@ -21,6 +23,9 @@ app.use(gloablComponent)
 
 // 注册模板路由
 app.use(router)
+
+// pinia
+app.use(pinia)
 
 // 安装element-plus插件
 app.use(ElementPlus, {
