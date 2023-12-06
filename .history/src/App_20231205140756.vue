@@ -1,0 +1,18 @@
+<template>
+  <div>
+    <el-row>
+      <el-button :icon="Search" circle />
+      <el-button type="primary" :icon="plus" circle />
+      <el-button type="success" :icon="Check" circle />
+      <el-button type="info" :icon="Message" circle />
+      <el-button type="warning" :icon="Star" circle />
+      <el-button type="danger" :icon="Delete" circle />
+    </el-row>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { plus } from '@/element-plus/icons-vue'
+</script>
+
+<style></style>
