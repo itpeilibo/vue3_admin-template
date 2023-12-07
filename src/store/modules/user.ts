@@ -4,12 +4,16 @@ import { loginForm, loginResponseData } from '@/api/user/type.ts'
 import { reqLogin } from '@/api/user'
 import { UserState } from '@/store/modules/types/type.ts'
 import { GET_TOKEN, SET_TOKEN } from '@/utils/token.ts'
+// 引入路由（常量路由）
+import { constantRoute } from '@/router/routes.ts'
+
 // 创建用户小仓库
 const useUserStore = defineStore('User', {
   // 小仓库存储数据的地方
   state: (): UserState => {
     return {
       token: GET_TOKEN(), // 用户地唯一标识
+      menuRoutes: constantRoute,
     }
   },
   // 异步、逻辑
