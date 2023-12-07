@@ -3,16 +3,16 @@
     <el-row>
       <el-col :span="12" :xs="0"></el-col>
       <el-col :span="12" :xs="24">
-        <el-form class="login_form">
+        <el-form class="login_form" :model="loginForm" :rules="rules">
           <h1>hello</h1>
           <h2>欢迎来到运营平台</h2>
-          <el-form-item>
+          <el-form-item prop="username">
             <el-input
               :prefix-icon="User"
               v-model="loginForm.username"
             ></el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item prop="password">
             <el-input
               :prefix-icon="Lock"
               type="password"
@@ -50,9 +50,32 @@ let loading = ref(false)
 
 // 获取路由器
 let $router = useRouter()
+//获取表单元素
 let loginForm = reactive({ username: 'admin', password: '111111' })
 // 引入用户小仓库
 let useStore = useUserStore()
+
+// 定义表单验证规则rules
+const rules = {
+  username: [
+    {
+      required: true,
+      min: 5,
+      max: 16,
+      message: '用户名长度应为5-16位',
+      trigger: 'change',
+    },
+  ],
+  password: [
+    {
+      required: true,
+      min: 6,
+      max: 16,
+      message: '密码长度应为6-16位',
+      trigger: 'change',
+    },
+  ],
+}
 
 const login = async () => {
   // 开始加载
@@ -74,6 +97,7 @@ const login = async () => {
       message: (errer as Error).message,
     })
   }
+  ;``
 }
 </script>
 
