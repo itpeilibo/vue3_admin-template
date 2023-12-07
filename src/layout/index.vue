@@ -1,16 +1,20 @@
 <template>
   <div class="layout_container">
-    <div class="layout_slider">111</div>
+    <div class="layout_slider">
+      <Logo></Logo>
+    </div>
     <!-- 顶部导航 -->
     <div class="layout_tabbar">222</div>
     <!-- 内容展示区域 -->
     <div class="layout_main">
-      <p style="height: 1000px">111</p>
+      <p style="height: 1000px">我是一个段落</p>
     </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Logo from '@/layout/logo/index.vue'
+</script>
 
 <style scoped lang="scss">
 .layout_container {
