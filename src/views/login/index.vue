@@ -62,7 +62,7 @@ const validateUsername = (rule: any, value: any, callback: any) => {
   //函数:如果符合条件callBack放行通过即为
   //如果不符合条件callBack方法,注入错误提示信息
   console.log('自定义校验name', value, callback)
-  if (value.label >= 5) {
+  if (value.length >= 5) {
     callback()
   } else {
     callback(new Error('账号长度至少五位'))
@@ -73,7 +73,7 @@ const validatePassword = (rule: any, value: any, callback: any) => {
   //value:即为表单元素文本内容
   //函数:如果符合条件callBack放行通过即为
   //如果不符合条件callBack方法,注入错误提示信息
-  if (value.label >= 6) {
+  if (value.length >= 6) {
     callback()
   } else {
     callback(new Error('密码长度至少六位'))
@@ -104,7 +104,7 @@ const login = async () => {
   loading.value = true
   try {
     await useStore.userLogin(loginForm)
-    await $router.push('/home')
+    await $router.push('/')
     // 登录成功提示信息
     ElNotification({
       title: `Hi!${getTime()}`,
