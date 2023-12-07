@@ -6,6 +6,7 @@ export const constantRoute = [
     meta: {
       title: '登录', // 菜单需要的标题
       hidden: true, // 代表标题在菜单中是否隐藏
+      icon: 'User',
     },
   },
 
@@ -17,6 +18,7 @@ export const constantRoute = [
     meta: {
       title: 'layout',
       hidden: false,
+      icon: 'Grid',
     },
     children: [
       {
@@ -24,15 +26,8 @@ export const constantRoute = [
         component: () => import('@/views/home/index.vue'),
         meta: {
           title: '首页',
-          hidden: true,
-        },
-      },
-      {
-        path: '/ceshi',
-        component: () => import('@/views/home/index.vue'),
-        meta: {
-          title: '测试',
           hidden: false,
+          icon: 'Grid',
         },
       },
     ],
@@ -44,6 +39,7 @@ export const constantRoute = [
     meta: {
       title: '404',
       hidden: true,
+      icon: 'Grid',
     },
   },
   {
@@ -53,6 +49,7 @@ export const constantRoute = [
     meta: {
       title: '任意路由',
       hidden: true,
+      icon: 'Grid',
     },
   },
 ]
