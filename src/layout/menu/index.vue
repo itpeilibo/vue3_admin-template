@@ -22,6 +22,7 @@
       <!--  有子路由但是只有一个子路由   -->
       <template v-if="item.children && item.children.length == 1">
         <el-menu-item
+          @click="goRoute"
           :index="item.children[0].path"
           v-if="!item.children[0].meta.hidden"
         >
@@ -61,8 +62,7 @@ defineProps(['menuList'])
 let $router = useRouter()
 
 // 点击菜单进行路由跳转
-const goRoute = (vc) => {
-  console.log('点击菜单', vc)
+const goRoute = (vc: any) => {
   $router.push(vc.index)
 }
 </script>
