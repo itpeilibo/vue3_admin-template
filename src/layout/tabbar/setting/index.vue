@@ -1,12 +1,21 @@
-<script setup lang="ts"></script>
 <script lang="ts">
 export default {
   name: 'Setting',
 }
 </script>
+<script lang="ts" setup>
+import useLayOutSettingStore from '@/store/modules/setting.ts'
 
+let layOutSettingStore = useLayOutSettingStore()
+
+// 点击刷新的回调
+const refreshChange = () => {
+  layOutSettingStore.refresh = !layOutSettingStore.refresh
+}
+</script>
 <template>
-  <el-button size="small" icon="Refresh" circle />
+  <el-button size="small" icon="Refresh" circle @click="refreshChange" />
+
   <el-button size="small" icon="FullScreen" circle />
   <el-button size="small" icon="Setting" circle />
   <img
