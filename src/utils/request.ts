@@ -1,6 +1,7 @@
 // 进行axios二次封装
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import useUserStore from '@/store/modules/user.ts'
 const request = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 5000, // 超时时间
@@ -8,6 +9,11 @@ const request = axios.create({
 
 // 请求拦截器
 request.interceptors.request.use((config) => {
+  const userStore = useUserStore()
+  console.log(userStore)
+  if (userStore.token) {
+    config.headers.token = userStore.token
+  }
   // 返回配置对象
   return config
 })

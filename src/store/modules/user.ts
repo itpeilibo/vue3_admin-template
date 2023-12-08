@@ -1,7 +1,7 @@
 // 用户相关的小仓库
 import { defineStore } from 'pinia'
 import { loginForm, loginResponseData } from '@/api/user/type.ts'
-import { reqLogin } from '@/api/user'
+import { reqLogin, reqUserInfo } from '@/api/user'
 import { UserState } from '@/store/modules/types/type.ts'
 import { GET_TOKEN, SET_TOKEN } from '@/utils/token.ts'
 // 引入路由（常量路由）
@@ -14,13 +14,15 @@ const useUserStore = defineStore('User', {
     return {
       token: GET_TOKEN(), // 用户地唯一标识
       menuRoutes: constantRoute,
+      //记得到type中进行类型定义
+      username: '',
+      avatar: '',
     }
   },
   // 异步、逻辑
   actions: {
     // 用户登入的方法
     async userLogin(data: loginForm) {
-      console.log(data)
       const result: loginResponseData = await reqLogin(data)
       //登入请求：成功200----token.ts
       //登入请求：失败201--登入失败错误的信息
@@ -35,6 +37,18 @@ const useUserStore = defineStore('User', {
       } else {
         return Promise.reject(new Error(result.data.message))
       }
+    },
+
+    // 拿token向服务器请求用户数据
+    async getUserInfo() {
+      // 获取用户信息进行存储【头像，用户名】
+      const result = await reqUserInfo()
+      if (result.code == 200) {
+        this.username = result.data.checkUser.username
+        this.avatar = result.data.checkUser.avatar
+      } else {
+      }
+      console.log('数据', result)
     },
   },
   getters: {},

@@ -5,8 +5,10 @@ export default {
 </script>
 <script lang="ts" setup>
 import useLayOutSettingStore from '@/store/modules/setting.ts'
-
 let layOutSettingStore = useLayOutSettingStore()
+
+import useUserStore from '@/store/modules/user'
+let userStore = useUserStore()
 
 // 点击刷新的回调
 const refreshChange = () => {
@@ -32,14 +34,14 @@ const fullScreen = () => {
   <el-button size="small" icon="FullScreen" circle @click="fullScreen" />
   <el-button size="small" icon="Setting" circle />
   <img
-    src="../../../../public/hero.jpg"
+    :src="userStore.avatar"
     style="width: 32px; height: 24px; margin: 0 10px"
   />
 
   <!-- 下拉菜单 -->
   <el-dropdown>
     <span class="el-dropdown-link">
-      Admin
+      {{ userStore.username }}
       <el-icon class="el-icon--right">
         <arrow-down />
       </el-icon>
