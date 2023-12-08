@@ -8,12 +8,12 @@
           v-if="!item.meta.hidden"
           @click="goRoute"
         >
+          <span>
+            <el-icon>
+              <component :is="item.meta.icon"></component>
+            </el-icon>
+          </span>
           <template #title>
-            <span>
-              <el-icon>
-                <component :is="item.meta.icon"></component>
-              </el-icon>
-            </span>
             <span>{{ item.meta.title }}</span>
           </template>
         </el-menu-item>
@@ -26,10 +26,10 @@
           :index="item.children[0].path"
           v-if="!item.children[0].meta.hidden"
         >
+          <el-icon>
+            <component :is="item.children[0].meta.icon"></component>
+          </el-icon>
           <template #title>
-            <el-icon>
-              <component :is="item.children[0].meta.icon"></component>
-            </el-icon>
             <span>{{ item.children[0].meta.title }}</span>
           </template>
         </el-menu-item>
