@@ -5,12 +5,18 @@ export default {
 </script>
 <script setup lang="ts">
 import useLayOutSettingStore from '@/store/modules/setting.ts'
+import { useRoute } from 'vue-router'
 
 let layOutSettingStore = useLayOutSettingStore()
 
 const changeIcon = () => {
   // 图标替换
   layOutSettingStore.fold = !layOutSettingStore.fold
+}
+
+let $route = useRoute()
+const handler = () => {
+  console.log($route.matched)
 }
 </script>
 
@@ -20,9 +26,20 @@ const changeIcon = () => {
   </el-icon>
 
   <!-- 左侧面包屑 -->
-  <el-breadcrumb separator-icon="ArrowRight">
-    <el-breadcrumb-item>权限管理</el-breadcrumb-item>
-    <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+  <el-breadcrumb separator-icon="ArrowRight" @click="handler">
+    <el-breadcrumb-item
+      v-for="(item, index) in $route.matched"
+      :key="index"
+      v-show="item.meta.title"
+      :to="item.path"
+    >
+      <!-- 渲染图标 -->
+      <el-icon style="margin: 0 2px">
+        <component :is="item.meta.icon"></component>
+      </el-icon>
+      <!-- 渲染面包屑标题 -->
+      <span>{{ item.meta.title }}</span>
+    </el-breadcrumb-item>
   </el-breadcrumb>
 </template>
 

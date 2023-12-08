@@ -53,6 +53,7 @@ export const constantRoute = [
       icon: 'Grid',
     },
   },
+
   {
     path: '/screen',
     component: () => import('@/views/screen/index.vue'),
@@ -63,6 +64,7 @@ export const constantRoute = [
       icon: 'Platform',
     },
   },
+
   // 权限管理
   {
     path: '/acl',
@@ -73,6 +75,7 @@ export const constantRoute = [
       hidden: false,
       icon: 'Lock',
     },
+    redirect: '/acl/user',
     children: [
       {
         path: '/acl/user',

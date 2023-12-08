@@ -10,7 +10,7 @@
       <el-scrollbar class="scrollbar">
         <!--  菜单组件    -->
         <el-menu
-          :collapse="layOutSettingStore.fold ? true : false"
+          :collapse="layOutSettingStore.fold"
           background-color="#001529"
           text-color="white"
           active-text-color="yellowgreen"
