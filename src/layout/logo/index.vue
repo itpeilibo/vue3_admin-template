@@ -7,6 +7,11 @@
 <script setup lang="ts">
 import setting from '@/settings.ts'
 </script>
+<script lang="ts">
+export default {
+  name: 'Logo',
+}
+</script>
 
 <style scoped lang="scss">
 .logo {
@@ -15,7 +20,7 @@ import setting from '@/settings.ts'
   color: white;
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
   img {
     width: 40px;
     height: 40px;
