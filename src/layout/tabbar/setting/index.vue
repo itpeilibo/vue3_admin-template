@@ -8,7 +8,11 @@ import useLayOutSettingStore from '@/store/modules/setting.ts'
 let layOutSettingStore = useLayOutSettingStore()
 
 import useUserStore from '@/store/modules/user'
+import { useRoute, useRouter } from 'vue-router'
 let userStore = useUserStore()
+let $router = useRouter()
+
+let $route = useRoute()
 
 // 点击刷新的回调
 const refreshChange = () => {
@@ -26,6 +30,14 @@ const fullScreen = () => {
     //变为不是全屏模式->退出全屏模式
     document.exitFullscreen()
   }
+}
+
+//退出登录点击回调
+const logout = () => {
+  userStore.userLogout()
+
+  // 跳转到登录页面
+  $router.push({ path: '/login', query: { redirect: $route.path } })
 }
 </script>
 <template>
@@ -48,7 +60,7 @@ const fullScreen = () => {
     </span>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item>退出登入</el-dropdown-item>
+        <el-dropdown-item @click="logout">退出登入</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>

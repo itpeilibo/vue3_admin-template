@@ -42,9 +42,10 @@
 import { User, Lock } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
 import useUserStore from '@/store/modules/user.ts'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { getTime } from '@/utils/time.ts'
+import { reqUserInfo } from '@/api/user'
 //
 let loading = ref(false)
 
@@ -54,7 +55,7 @@ let $router = useRouter()
 let loginForm = reactive({ username: 'admin', password: '111111' })
 // 引入用户小仓库
 let useStore = useUserStore()
-
+let $route = useRoute()
 // 自定义校验规则函数
 const validateUsername = (rule: any, value: any, callback: any) => {
   //rule:即为校验规则对象
@@ -104,7 +105,12 @@ const login = async () => {
   loading.value = true
   try {
     await useStore.userLogin(loginForm)
-    await $router.push('/')
+
+    // 判断登录的时候，路由路径当前是否右query参数，如果有就往query参数跳转，没有调转到首页
+    let redirect: any = $route.query.redirect
+
+    await $router.push(redirect || '/')
+
     // 登录成功提示信息
     ElNotification({
       title: `Hi!${getTime()}`,

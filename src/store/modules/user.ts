@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { loginForm, loginResponseData } from '@/api/user/type.ts'
 import { reqLogin, reqUserInfo } from '@/api/user'
 import { UserState } from '@/store/modules/types/type.ts'
-import { GET_TOKEN, SET_TOKEN } from '@/utils/token.ts'
+import { GET_TOKEN, SET_TOKEN, REMOVE_TOKEN } from '@/utils/token.ts'
 // 引入路由（常量路由）
 import { constantRoute } from '@/router/routes.ts'
 
@@ -49,6 +49,16 @@ const useUserStore = defineStore('User', {
       } else {
       }
       console.log('数据', result)
+    },
+
+    //退出登入
+    userLogout() {
+      //目前没有退出接口
+      //清除数据
+      this.token = ''
+      this.username = ''
+      this.avatar = ''
+      REMOVE_TOKEN
     },
   },
   getters: {},
