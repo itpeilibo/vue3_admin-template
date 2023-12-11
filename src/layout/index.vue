@@ -1,9 +1,6 @@
 <template>
   <div class="layout_container">
-    <div
-      class="layout_slider"
-      :class="{ fold: layOutSettingStore.fold ? true : false }"
-    >
+    <div class="layout_slider">
       <Logo></Logo>
       <!--  展示菜单    -->
       <!--  滚动组件    -->
@@ -82,9 +79,6 @@ export default {
       .el-menu {
         border-right: none;
       }
-    }
-    &.fold {
-      width: $base-menu-min-width;
     }
   }
 

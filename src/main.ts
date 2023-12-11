@@ -12,6 +12,7 @@ import 'virtual:svg-icons-register'
 import router from '@/router'
 // 仓库
 import pinia from '@/store/index.ts'
+import './permisstion.ts'
 import App from '@/App.vue'
 // 获取应用实例对象
 const app = createApp(App)
