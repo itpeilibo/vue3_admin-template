@@ -1,6 +1,10 @@
 // 用户相关的小仓库
 import { defineStore } from 'pinia'
-import { loginForm, loginResponseData } from '@/api/user/type.ts'
+import type {
+  loginResponseData,
+  loginFormData,
+  userInfoResponseData,
+} from '@/api/user/type.ts'
 import { reqLogin, reqLogout, reqUserInfo } from '@/api/user'
 import { UserState } from '@/store/modules/types/type.ts'
 import { GET_TOKEN, SET_TOKEN, REMOVE_TOKEN } from '@/utils/token.ts'
@@ -22,9 +26,8 @@ const useUserStore = defineStore('User', {
   // 异步、逻辑
   actions: {
     // 用户登入的方法
-    async userLogin(data: any) {
+    async userLogin(data: loginFormData) {
       const result: loginResponseData = await reqLogin(data)
-      console.log('登录', result)
       //登入请求：成功200----token.ts
       //登入请求：失败201--登入失败错误的信息
       if (result?.code === 200) {
@@ -43,19 +46,19 @@ const useUserStore = defineStore('User', {
     // 拿token向服务器请求用户数据
     async getUserInfo() {
       // 获取用户信息进行存储【头像，用户名】
-      const result = await reqUserInfo()
+      const result: userInfoResponseData = await reqUserInfo()
       if (result.code == 200) {
-        this.username = result.data.username
-        this.avatar = result.data.avatar
+        this.username = result.data?.name
+        this.avatar = result.data?.avatar
         return 'ok'
       } else {
-        return Promise.reject(new Error(result.data.message))
+        return Promise.reject(new Error(result?.message))
       }
     },
 
     //退出登入
     async userLogout() {
-      const result = await reqLogout()
+      const result: any = await reqLogout()
       if (result?.code === 200) {
         //清除数据
         this.token = ''
