@@ -2,17 +2,35 @@
   <div>
     <el-card class="box-card">
       <el-button type="primary" :icon="Plus">添加品牌</el-button>
-      <el-table :data="tableData" style="margin: 10px 0" border>
-        <el-table-column label="序号" width="180" type="index" />
-        <el-table-column prop="name" label="品牌名称" width="180" />
-        <el-table-column prop="name" label="品牌LOGO" />
-        <el-table-column prop="address" label="品牌操作" />
+      <el-table
+        :data="trademarkArr"
+        style="margin: 10px 0"
+        border
+        max-height="700px"
+      >
+        <el-table-column label="序号" type="index" />
+        <el-table-column prop="tmName" label="品牌名称">
+          <template #="{ row }">
+            <span>{{ row.tmName || '/' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="logoUrl" label="品牌LOGO">
+          <template #="{ row }">
+            <img :src="row.logoUrl" style="width: 50px; height: 50px" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="address" label="品牌操作">
+          <template #default>
+            <el-button size="mini" type="primary" :icon="Edit"></el-button>
+            <el-button size="mini" type="danger" :icon="Delete"></el-button>
+          </template>
+        </el-table-column>
       </el-table>
 
       <el-pagination
         background
-        v-model:current-page="currentPage4"
-        v-model:page-size="pageSize4"
+        v-model:current-page="pageNo"
+        v-model:page-size="limit"
         :page-sizes="[10, 20, 30, 40]"
         :small="small"
         layout="prev, pager, next, jumper,->,sizes,total"
@@ -25,37 +43,32 @@
 </template>
 
 <script setup lang="ts">
-import { Plus } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { Check, Delete, Edit, Plus } from '@element-plus/icons-vue'
+import { onMounted, ref } from 'vue'
+import { reqHasTrademark } from '@/api/product/trademark'
 
-const tableData = [
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-]
+const trademarkArr = ref([])
 
 // 分页
-const currentPage4 = ref(1)
-const pageSize4 = ref(10)
+// 当前页
+const pageNo = ref(1)
+// 当前页数量
+const limit = ref(10)
 const small = ref(false)
 const total = ref(0)
+
+const getHasTrademark = async () => {
+  const { data } = await reqHasTrademark(pageNo.value, limit.value)
+  console.log('数据', data)
+  trademarkArr.value = data.records
+  total.value = data.total
+  pageNo.value = data.current
+  limit.value = data.size
+}
+onMounted(() => {
+  getHasTrademark()
+})
+
 const handleSizeChange = (val: number) => {
   console.log(`${val} items per page`)
 }
