@@ -58,8 +58,6 @@ router.beforeEach(async (to: any, from: any, next: any) => {
       next({ path: '/login', query: { redirect: to.path } })
     }
   }
-
-  next()
 })
 
 //全局后置守卫

@@ -52,7 +52,7 @@ let loading = ref(false)
 // 获取路由器
 let $router = useRouter()
 //获取表单元素
-let loginForm = reactive({ username: 'admin', password: '111111' })
+let loginForm = reactive({ username: 'admin', password: 'atguigu123' })
 // 引入用户小仓库
 let useStore = useUserStore()
 let $route = useRoute()
