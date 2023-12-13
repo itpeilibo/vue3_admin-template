@@ -42,20 +42,33 @@
       />
     </el-card>
 
+    <!-- 对话框组件:在添加品牌与修改已有品牌的业务时候使用结构 -->
+    <!--
+        v-model:属性用户控制对话框的显示与隐藏的 true显示 false隐藏
+         title:设置对话框左上角标题
+    -->
+
     <el-dialog v-model="dialogVisible" title="添加品牌" width="30%">
-      <el-form style="width: 80%">
+      <el-form style="width: 80%" :model="trademarkParams">
         <el-form-item label="品牌名称" label-width="80px">
-          <el-input placeholder="请输入品牌名称"></el-input>
+          <el-input
+            placeholder="请输入品牌名称"
+            v-model="trademarkParams.tmName"
+          ></el-input>
         </el-form-item>
         <el-form-item label="品牌LOGO" label-width="80px">
           <el-upload
             class="avatar-uploader"
-            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+            action="https://adminlearn.reiko.fun/prod_api/admin/product/fileUpload"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <img
+              v-if="trademarkParams.logoUrl"
+              :src="trademarkParams.logoUrl"
+              class="avatar"
+            />
             <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
           </el-upload>
         </el-form-item>
@@ -72,9 +85,10 @@
 
 <script setup lang="ts">
 import { Delete, Edit, Plus } from '@element-plus/icons-vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { reqHasTrademark } from '@/api/product/trademark'
 import { Records, TradeMarkResponseData } from '@/api/product/trademark/type.ts'
+import { ElMessage, UploadProps } from 'element-plus'
 
 // 弹窗
 const dialogVisible = ref(false)
@@ -83,6 +97,10 @@ const addTrademark = () => {
   console.log(123)
   dialogVisible.value = true
 }
+let trademarkParams = reactive({
+  tmName: '',
+  logoUrl: '',
+})
 
 // 对话框取消
 const cancel = () => {}
@@ -111,6 +129,43 @@ const getHasTrademark = async () => {
   pageNo.value = result.data.current
   limit.value = result.data.size
 }
+
+//上传图片组件->上传图片之前触发的钩子函数
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  console.log(rawFile)
+  //钩子是在图片上传成功之前触发,上传文件之前可以约束文件类型与大小
+  if (
+    rawFile.type == 'image/png' ||
+    rawFile.type == 'image/jpeg' ||
+    rawFile.type == 'image/gif'
+  ) {
+    if (rawFile.size / 1024 / 1024 < 4) {
+      return true
+    } else {
+      ElMessage({
+        type: 'error',
+        message: '上传文件大小小于4M',
+      })
+      return false
+    }
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '上传文件格式务必PNG|JPG|GIF',
+    })
+    return false
+  }
+}
+
+// 图片上传成功钩子
+const handleAvatarSuccess: UploadProps['onSuccess'] = (
+  response,
+  uploadFile,
+) => {
+  console.log('上传成功', response, uploadFile)
+  trademarkParams.logoUrl = response.data
+}
+
 onMounted(() => {
   getHasTrademark()
 })

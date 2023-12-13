@@ -22,3 +22,19 @@ export const reqHasTrademark = (page: number, limit: number) => {
     API.TRADEMARK_URL + `${page}/${limit}`,
   )
 }
+
+//添加与修改已有品牌接口方法
+export const reqAddOrUpdateTrademark = (data: any) => {
+  //修改已有品牌的数据
+  if (data.id) {
+    return request.put(API.UPDATETRADEMARK_URL, data)
+  } else {
+    //新增品牌
+    return request.post(API.ADDTRADEMARK_URL, data)
+  }
+}
+
+//删除某一个已有品牌的数据
+export const reqDeleteTrademark = (id: number) => {
+  return request.delete(API.DELETE_URL + id)
+}
