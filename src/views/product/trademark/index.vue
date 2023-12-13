@@ -49,7 +49,7 @@
     -->
 
     <el-dialog v-model="dialogVisible" title="添加品牌" width="30%">
-      <el-form style="width: 80%" :model="trademarkParams">
+      <el-form style="width: 80%" :model="trademarkParams" ref="">
         <el-form-item label="品牌名称" label-width="80px">
           <el-input
             placeholder="请输入品牌名称"
@@ -86,7 +86,10 @@
 <script setup lang="ts">
 import { Delete, Edit, Plus } from '@element-plus/icons-vue'
 import { onMounted, reactive, ref } from 'vue'
-import { reqHasTrademark } from '@/api/product/trademark'
+import {
+  reqAddOrUpdateTrademark,
+  reqHasTrademark,
+} from '@/api/product/trademark'
 import { Records, TradeMarkResponseData } from '@/api/product/trademark/type.ts'
 import { ElMessage, UploadProps } from 'element-plus'
 
@@ -94,7 +97,8 @@ import { ElMessage, UploadProps } from 'element-plus'
 const dialogVisible = ref(false)
 // 触发新增编辑
 const addTrademark = () => {
-  console.log(123)
+  trademarkParams.tmName = ''
+  trademarkParams.logoUrl = ''
   dialogVisible.value = true
 }
 let trademarkParams = reactive({
@@ -106,7 +110,22 @@ let trademarkParams = reactive({
 const cancel = () => {}
 
 // 对话框确认
-const confirm = () => {}
+const confirm = async () => {
+  console.log('确认', trademarkParams)
+  let result: any = await reqAddOrUpdateTrademark(trademarkParams)
+  if (result.code == 200) {
+    // 关闭对话框
+    dialogVisible.value = false
+    // 弹出提示信息
+    ElMessage({ type: 'success', message: result.message })
+    await getHasTrademark()
+  } else {
+    // 关闭对话框
+    dialogVisible.value = false
+    ElMessage({ type: 'error', message: result.message })
+  }
+  console.log(result)
+}
 
 // 分页
 // 当前页
