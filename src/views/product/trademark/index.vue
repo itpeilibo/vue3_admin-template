@@ -43,11 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import { Check, Delete, Edit, Plus } from '@element-plus/icons-vue'
+import { Delete, Edit, Plus } from '@element-plus/icons-vue'
 import { onMounted, ref } from 'vue'
 import { reqHasTrademark } from '@/api/product/trademark'
+import { Records, TradeMarkResponseData } from '@/api/product/trademark/type.ts'
 
-const trademarkArr = ref([])
+const trademarkArr = ref<Records>([])
 
 // 分页
 // 当前页
@@ -58,12 +59,14 @@ const small = ref(false)
 const total = ref(0)
 
 const getHasTrademark = async () => {
-  const { data } = await reqHasTrademark(pageNo.value, limit.value)
-  console.log('数据', data)
-  trademarkArr.value = data.records
-  total.value = data.total
-  pageNo.value = data.current
-  limit.value = data.size
+  const result: TradeMarkResponseData = await reqHasTrademark(
+    pageNo.value,
+    limit.value,
+  )
+  trademarkArr.value = result.data.records
+  total.value = result.data.total
+  pageNo.value = result.data.current
+  limit.value = result.data.size
 }
 onMounted(() => {
   getHasTrademark()
