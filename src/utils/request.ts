@@ -10,7 +10,6 @@ const request = axios.create({
 // 请求拦截器
 request.interceptors.request.use((config) => {
   const userStore = useUserStore()
-  console.log(userStore)
   if (userStore.token) {
     config.headers.token = userStore.token
   }
@@ -21,7 +20,6 @@ request.interceptors.request.use((config) => {
 // 响应拦截器
 request.interceptors.response.use(
   (response) => {
-    console.log(response)
     return response.data
   },
   (error) => {

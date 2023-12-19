@@ -41,7 +41,6 @@
 import { onMounted } from 'vue'
 import useCategoryStore from '@/store/modules/category.ts'
 let categoryStore = useCategoryStore()
-console.log('当前', categoryStore.c1Id)
 onMounted(() => {
   getC1()
 })
