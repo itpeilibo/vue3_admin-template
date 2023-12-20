@@ -17,7 +17,7 @@ enum API {
   ATTR_URL = '/admin/product/attrInfoList/',
 
   // 添加或修改已有的属性的接口
-  ADDORUPDATEATTR_URL = '/admin/product/saveAttrInfo/',
+  ADDORUPDATEATTR_URL = '/admin/product/saveAttrInfo',
 }
 
 //获取一级分类的接口方法
