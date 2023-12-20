@@ -43,7 +43,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template #="{ row, $index }">
-            <el-button type="primary" @click="updateAttr">编辑</el-button>
+            <el-button type="primary" @click="updateAttr(row)">编辑</el-button>
             <el-button type="primary">删除</el-button>
           </template>
         </el-table-column>
@@ -183,7 +183,13 @@ const addAttr = () => {
 }
 
 // table表格修改已有属性按钮的回调
-const updateAttr = () => {}
+const updateAttr = (row: Attr) => {
+  //切换为添加与修改属性的结构
+  scene.value = 1
+  //将已有的属性对象赋值给attrParams对象即为
+  //ES6->Object.assign进行对象的合并
+  Object.assign(attrParams, JSON.parse(JSON.stringify(row)))
+}
 
 // 取消添加属性值
 const cancel = () => {
