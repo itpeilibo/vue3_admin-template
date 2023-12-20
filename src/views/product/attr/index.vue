@@ -80,6 +80,7 @@
         <el-table-column label="属性值名称">
           <template #="{ row, $index }">
             <el-input
+              :ref="(vc: any) => (inputArr[$index] = vc)"
               v-if="row.flag"
               placeholder="请输入属性值名称"
               v-model="row.valueName"
@@ -88,7 +89,16 @@
             <div v-else @click="toEdit(row, $index)">{{ row.valueName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="属性值操作"></el-table-column>
+        <el-table-column label="属性值操作">
+          <template #="{ row, $index }">
+            <el-button
+              type="primary"
+              size="small"
+              icon="Delete"
+              @click="($event) => attrParams.attrValueList.splice($index, 1)"
+            ></el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <el-button
         size="default"
@@ -106,7 +116,7 @@
 <script setup lang="ts">
 import Category from '@/components/Category/index.vue'
 import useCategoryStore from '@/store/modules/category.ts'
-import { reactive, ref, watch } from 'vue'
+import { nextTick, reactive, ref, watch } from 'vue'
 import { reqAddOrUpdateAttr, reqAttr } from '@/api/product/attr'
 import { Attr, AttrResponseData, AttrValue } from '@/api/product/attr/type.ts'
 import { ElMessage } from 'element-plus'
@@ -119,7 +129,7 @@ let attrArr = ref<Attr[]>([])
 let scene = ref<number>(0) //scene=0,显示table,scene=1,展示添加与修改属性结构
 
 //准备一个数组:将来存储对应的组件实例el-input
-// let inputArr = ref<any>([])
+let inputArr = ref<any>([])
 
 //收集新增的属性的数据
 let attrParams = reactive<any>({
@@ -187,6 +197,11 @@ const addAttrValue = () => {
     valueName: '',
     flag: true, //控制每一个属性值编辑模式与切换模式的切换
   })
+
+  //获取最后el-input组件聚焦
+  nextTick(() => {
+    inputArr.value[attrParams.attrValueList.length - 1].focus()
+  })
 }
 
 // 保存
@@ -250,6 +265,10 @@ const toLook = (row: AttrValue, $index: number) => {
 const toEdit = (row: AttrValue, $index: number) => {
   //相应的属性值对象flag:变为true,展示input
   row.flag = true
+  //nextTick:响应式数据发生变化,获取更新的DOM(组件实例)
+  nextTick(() => {
+    inputArr.value[$index].focus()
+  })
 }
 </script>
 
