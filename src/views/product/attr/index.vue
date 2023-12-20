@@ -80,14 +80,24 @@
         <el-table-column label="属性值名称">
           <template #="{ row, $index }">
             <el-input
+              v-if="row.flag"
               placeholder="请输入属性值名称"
               v-model="row.valueName"
+              @blur="toLook(row, $index)"
             ></el-input>
+            <div v-else @click="toEdit(row, $index)">{{ row.valueName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="属性值操作"></el-table-column>
       </el-table>
-      <el-button size="default" type="primary" @click="save">保存</el-button>
+      <el-button
+        size="default"
+        type="primary"
+        @click="save"
+        :disabled="!attrParams.attrValueList.length"
+      >
+        保存
+      </el-button>
       <el-button size="default" type="primary">取消</el-button>
     </div>
   </el-card>
@@ -98,7 +108,7 @@ import Category from '@/components/Category/index.vue'
 import useCategoryStore from '@/store/modules/category.ts'
 import { reactive, ref, watch } from 'vue'
 import { reqAddOrUpdateAttr, reqAttr } from '@/api/product/attr'
-import { Attr, AttrResponseData } from '@/api/product/attr/type.ts'
+import { Attr, AttrResponseData, AttrValue } from '@/api/product/attr/type.ts'
 import { ElMessage } from 'element-plus'
 let categoryStore = useCategoryStore()
 
@@ -107,6 +117,9 @@ let attrArr = ref<Attr[]>([])
 
 // 定义card组件内容切换变量
 let scene = ref<number>(0) //scene=0,显示table,scene=1,展示添加与修改属性结构
+
+//准备一个数组:将来存储对应的组件实例el-input
+// let inputArr = ref<any>([])
 
 //收集新增的属性的数据
 let attrParams = reactive<any>({
@@ -117,6 +130,7 @@ let attrParams = reactive<any>({
   categoryId: '', //三级分类的ID
   categoryLevel: 3, //代表的是三级分类
 })
+
 //监听仓库三级分类ID变化
 watch(
   () => categoryStore.c3Id,
@@ -171,16 +185,15 @@ const addAttrValue = () => {
   //点击添加属性值按钮的时候,向数组添加一个属性值对象
   attrParams.attrValueList.push({
     valueName: '',
+    flag: true, //控制每一个属性值编辑模式与切换模式的切换
   })
 }
 
 // 保存
 const save = async () => {
-  console.log('保存', attrParams)
   // 收集参数
   // 发起请求
   let result = await reqAddOrUpdateAttr(attrParams)
-  console.log('保存请求', result)
   if (result.code === 200) {
     // 切换场景
     scene.value = 0
@@ -195,6 +208,48 @@ const save = async () => {
       message: attrParams.id ? '修改失败' : '添加失败',
     })
   }
+}
+
+// 属性值表单元素失去焦点的方法
+const toLook = (row: AttrValue, $index: number) => {
+  //非法情况判断1
+  if (row.valueName.trim() === '') {
+    //删除调用对应属性值为空的元素
+    attrParams.attrValueList.splice($index, 1)
+    //提示信息
+    ElMessage({
+      type: 'error',
+      message: '属性值不能为空',
+    })
+    return
+  }
+  //非法情况2
+  let repeat = attrParams.attrValueList.find((item) => {
+    //切记把当前失却焦点属性值对象从当前数组扣除判断
+    if (item != row) {
+      return item.valueName === row.valueName
+    }
+  })
+
+  if (repeat) {
+    //将重复的属性值从数组当中干掉
+    attrParams.attrValueList.splice($index, 1)
+    //提示信息
+    ElMessage({
+      type: 'error',
+      message: '属性值不能重复',
+    })
+    return
+  }
+
+  //相应的属性值对象flag:变为false,展示div
+  row.flag = false
+}
+
+//属性值div点击事件
+const toEdit = (row: AttrValue, $index: number) => {
+  //相应的属性值对象flag:变为true,展示input
+  row.flag = true
 }
 </script>
 
