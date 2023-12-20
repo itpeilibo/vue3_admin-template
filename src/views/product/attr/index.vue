@@ -54,7 +54,10 @@
       <!--  展示添加属性与修改数据的结构   -->
       <el-form>
         <el-form-item label="属性名称">
-          <el-input placeholder="请输入属性名称"></el-input>
+          <el-input
+            placeholder="请输入属性名称"
+            v-model="attrParams.attrName"
+          ></el-input>
         </el-form-item>
       </el-form>
       <el-button type="primary" size="default" icon="Plus">
@@ -80,7 +83,7 @@
 <script setup lang="ts">
 import Category from '@/components/Category/index.vue'
 import useCategoryStore from '@/store/modules/category.ts'
-import { ref, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { reqAttr } from '@/api/product/attr'
 import { Attr, AttrResponseData } from '@/api/product/attr/type.ts'
 let categoryStore = useCategoryStore()
@@ -91,6 +94,15 @@ let attrArr = ref<Attr[]>([])
 // 定义card组件内容切换变量
 let scene = ref<number>(0) //scene=0,显示table,scene=1,展示添加与修改属性结构
 
+//收集新增的属性的数据
+let attrParams = reactive<any>({
+  attrName: '', //新增的属性的名字
+  attrValueList: [
+    //新增的属性值数组
+  ],
+  categoryId: '', //三级分类的ID
+  categoryLevel: 3, //代表的是三级分类
+})
 //监听仓库三级分类ID变化
 watch(
   () => categoryStore.c3Id,
