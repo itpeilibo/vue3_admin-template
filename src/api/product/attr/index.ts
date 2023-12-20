@@ -18,6 +18,9 @@ enum API {
 
   // 添加或修改已有的属性的接口
   ADDORUPDATEATTR_URL = '/admin/product/saveAttrInfo',
+
+  //删除某一个已有的属性
+  DELETEATTR_URL = '/admin/product/deleteAttr/',
 }
 
 //获取一级分类的接口方法
@@ -47,4 +50,9 @@ export const reqAttr = (
 // 新增或者修改已有的属性接口
 export const reqAddOrUpdateAttr = (data: Attr) => {
   return request.post<any, any>(API.ADDORUPDATEATTR_URL, data)
+}
+
+//删除某一个已有的属性业务
+export const reqRemoveAttr = (attrId: number) => {
+  return request.delete<any, any>(API.DELETEATTR_URL + attrId)
 }

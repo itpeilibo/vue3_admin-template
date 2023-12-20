@@ -44,7 +44,15 @@
         <el-table-column label="操作">
           <template #="{ row, $index }">
             <el-button type="primary" @click="updateAttr(row)">编辑</el-button>
-            <el-button type="primary">删除</el-button>
+            <el-popconfirm
+              :title="`你确定删除${row.attrName}?`"
+              width="200px"
+              @confirm="deleteAttr(row.id)"
+            >
+              <template #reference>
+                <el-button type="primary">删除</el-button>
+              </template>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
@@ -116,8 +124,15 @@
 <script setup lang="ts">
 import Category from '@/components/Category/index.vue'
 import useCategoryStore from '@/store/modules/category.ts'
-import { nextTick, reactive, ref, watch } from 'vue'
-import { reqAddOrUpdateAttr, reqAttr } from '@/api/product/attr'
+import {
+  nextTick,
+  onBeforeMount,
+  onBeforeUnmount,
+  reactive,
+  ref,
+  watch,
+} from 'vue'
+import { reqAddOrUpdateAttr, reqAttr, reqRemoveAttr } from '@/api/product/attr'
 import { Attr, AttrResponseData, AttrValue } from '@/api/product/attr/type.ts'
 import { ElMessage } from 'element-plus'
 let categoryStore = useCategoryStore()
@@ -276,6 +291,32 @@ const toEdit = (row: AttrValue, $index: number) => {
     inputArr.value[$index].focus()
   })
 }
+
+//删除某一个已有的属性方法回调
+const deleteAttr = async (attrId: number) => {
+  //发相应的删除已有的属性的请求
+  let result = await reqRemoveAttr(attrId)
+  //删除成功
+  if (result.code == 200) {
+    ElMessage({
+      type: 'success',
+      message: '删除成功',
+    })
+    //获取一次已有的属性与属性值
+    await getAttr()
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '删除失败',
+    })
+  }
+}
+
+//路由组件销毁的时候，把仓库分类相关的数据清空
+onBeforeUnmount(() => {
+  // 清空仓库的数据
+  categoryStore.$reset()
+})
 </script>
 
 <style scoped></style>
