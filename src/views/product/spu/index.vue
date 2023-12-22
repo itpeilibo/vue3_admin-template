@@ -63,7 +63,11 @@
         />
       </div>
       <!--  添加SPU修改SPU子组件    -->
-      <SpuForm v-show="scene == 1" @changeScene="changeScene"></SpuForm>
+      <SpuForm
+        v-show="scene == 1"
+        @changeScene="changeScene"
+        ref="spu"
+      ></SpuForm>
 
       <!--  添加SKU子组件    -->
       <SkuForm v-show="scene == 2"></SkuForm>
