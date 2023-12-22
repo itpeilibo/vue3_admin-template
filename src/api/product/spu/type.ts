@@ -29,3 +29,14 @@ export interface HasSpuResponseData extends ResponseData {
     pages: number
   }
 }
+
+//品牌数据的TS类型
+// export interface Trademark {
+//   id: number
+//   tmName: string
+//   logoUrl: string
+// }
+// //品牌接口返回的数据ts类型
+// export interface AllTradeMark extends ResponseData {
+//   data: Trademark[]
+// }
