@@ -69,11 +69,58 @@
   </el-form>
 </template>
 <script setup lang="ts">
+import {
+  AllTradeMark,
+  HasSaleAttr,
+  HasSaleAttrResponseData,
+  SaleAttr,
+  SaleAttrResponseData,
+  SpuData,
+  SpuHasImg,
+  SpuImg,
+  Trademark,
+} from '@/api/product/spu/type.ts'
+import {
+  reqAllSaleAttr,
+  reqAllTradeMark,
+  reqSpuHasSaleAttr,
+  reqSpuImageList,
+} from '@/api/product/spu'
+import { ref } from 'vue'
 let $emit = defineEmits(['changeScene'])
 
 //取消按钮的回调
 const cancel = () => {
   $emit('changeScene', 0)
+}
+let MYAllTradeMark = ref<Trademark[]>([])
+let imgList = ref<SpuImg[]>([])
+let saleAttr = ref<SaleAttr[]>([])
+let allSaleAttr = ref<HasSaleAttr[]>([])
+//子组件书写一个方法
+const initHasSpuData = async (spu: SpuData) => {
+  //spu:即为父组件传递过来的已有的SPU对象[不完整]
+  //获取全部品牌的数据
+  let result: AllTradeMark = await reqAllTradeMark()
+  //获取某一个品牌旗下全部售卖商品的图片
+  let result1: SpuHasImg = await reqSpuImageList(spu.id as number)
+  //获取已有的SPU销售属性的数据
+  let result2: SaleAttrResponseData = await reqSpuHasSaleAttr(spu.id as number)
+  //获取整个项目全部SPU的销售属性
+  let result3: HasSaleAttrResponseData = await reqAllSaleAttr()
+  //存储全部品牌的数据
+  MYAllTradeMark.value = result.data
+  //SPU对应商品图片
+  imgList.value = result1.data.map((item) => {
+    return {
+      name: item.imgName,
+      url: item.imgUrl,
+    }
+  })
+  //存储已有的SPU的销售属性
+  saleAttr.value = result2.data
+  //存储全部的销售属性
+  allSaleAttr.value = result3.data
 }
 
 // 点击文件列表中已上传的文件时的钩子
@@ -85,4 +132,6 @@ const handlePictureCardPreview = () => {
 const handleRemove = () => {
   console.log('移除文件')
 }
+
+defineExpose({ initHasSpuData })
 </script>
