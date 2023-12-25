@@ -1,22 +1,32 @@
 <template>
   <el-form label-width="100px">
     <el-form-item label="SPU名称">
-      <el-input placeholder="请你输入SPU名称"></el-input>
+      <el-input
+        placeholder="请你输入SPU名称"
+        v-model="SpuParams.spuName"
+      ></el-input>
     </el-form-item>
     <el-form-item label="SPU品牌">
-      <el-select>
-        <el-option label="华为"></el-option>
-        <el-option label="oppo"></el-option>
-        <el-option label="vivo"></el-option>
+      <el-select v-model="SpuParams.tmId">
+        <el-option
+          v-for="item in MYAllTradeMark"
+          :key="item.id"
+          :label="item.tmName"
+          :valu="item.id"
+        ></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="SPU描述">
-      <el-input type="textarea" placeholder="请你输入SPU描述"></el-input>
+      <el-input
+        type="textarea"
+        v-model="SpuParams.description"
+        placeholder="请你输入SPU描述"
+      ></el-input>
     </el-form-item>
     <el-form-item label="SPU图片">
       <el-upload
-        v-model:file-list="fileList"
-        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+        v-model:file-list="imgList"
+        action="/api/admin/product/fileUpo"
         list-type="picture-card"
         :on-preview="handlePictureCardPreview"
         :on-remove="handleRemove"
@@ -24,9 +34,9 @@
         <el-icon><Plus /></el-icon>
       </el-upload>
 
-      <el-dialog v-model="dialogVisible">
-        <img w-full :src="dialogImageUrl" alt="Preview Image" />
-      </el-dialog>
+      <!--      <el-dialog v-model="dialogVisible">-->
+      <!--        <img w-full :src="dialogImageUrl" alt="Preview Image" />-->
+      <!--      </el-dialog>-->
     </el-form-item>
     <el-form-item label="SPU销售属性" size="normal">
       <!-- 展示销售属性的下拉菜单 -->
@@ -97,8 +107,20 @@ let MYAllTradeMark = ref<Trademark[]>([])
 let imgList = ref<SpuImg[]>([])
 let saleAttr = ref<SaleAttr[]>([])
 let allSaleAttr = ref<HasSaleAttr[]>([])
+
+//存储已有的SPU对象
+let SpuParams = ref<SpuData>({
+  category3Id: '', //收集三级分类的ID
+  spuName: '', //SPU的名字
+  description: '', //SPU的描述
+  tmId: '', //品牌的ID
+  spuImageList: [],
+  spuSaleAttrList: [],
+})
+
 //子组件书写一个方法
 const initHasSpuData = async (spu: SpuData) => {
+  SpuParams.value = spu
   //spu:即为父组件传递过来的已有的SPU对象[不完整]
   //获取全部品牌的数据
   let result: AllTradeMark = await reqAllTradeMark()

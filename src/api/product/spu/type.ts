@@ -12,8 +12,8 @@ export interface SpuData {
   spuName: string
   tmId: number | string
   description: string
-  spuImageList: null
-  spuSaleAttrList: null
+  spuImageList: null | SpuImg[]
+  spuSaleAttrList: null | SaleAttr[]
 }
 
 //数组:元素都是已有SPU数据类型
