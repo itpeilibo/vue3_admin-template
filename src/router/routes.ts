@@ -6,7 +6,7 @@ export const constantRoute = [
     meta: {
       title: '登录', // 菜单需要的标题
       hidden: true, // 代表标题在菜单中是否隐藏
-      icon: 'User',
+      icon: 'Promotion',
     },
   },
 
@@ -40,7 +40,7 @@ export const constantRoute = [
     meta: {
       title: '404',
       hidden: true,
-      icon: 'Grid',
+      icon: 'DocumentDelete',
     },
   },
   {

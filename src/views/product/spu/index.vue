@@ -75,7 +75,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import Category from '@/components/Category/index.vue'
 import { ref, watch } from 'vue'
 // 引入分类仓库
 import useCategoryStore from '@/store/modules/category.ts'
@@ -140,6 +139,7 @@ const changeScene = (num: number) => {
 
 //修改已有的SPU的按钮的回调
 const updateSpu = (row: SpuData) => {
+  1
   //切换为场景1:添加与修改已有SPU结构->SpuForm
   scene.value = 1
   //调用子组件实例方法获取完整已有的SPU的数据

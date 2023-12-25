@@ -12,7 +12,7 @@
           v-for="item in MYAllTradeMark"
           :key="item.id"
           :label="item.tmName"
-          :valu="item.id"
+          :value="item.id"
         ></el-option>
       </el-select>
     </el-form-item>
@@ -26,19 +26,25 @@
     <el-form-item label="SPU图片">
       <el-upload
         v-model:file-list="imgList"
-        action="/api/admin/product/fileUpo"
+        action="https://adminlearn.reiko.fun/prod_api/admin/product/fileUpload"
         list-type="picture-card"
+        :before-upload="handlerUpload"
         :on-preview="handlePictureCardPreview"
         :on-remove="handleRemove"
       >
         <el-icon><Plus /></el-icon>
       </el-upload>
 
-      <!--      <el-dialog v-model="dialogVisible">-->
-      <!--        <img w-full :src="dialogImageUrl" alt="Preview Image" />-->
-      <!--      </el-dialog>-->
+      <el-dialog v-model="dialogVisible">
+        <img
+          w-full
+          :src="dialogImageUrl"
+          alt="Preview Image"
+          style="width: 100%; height: 100%"
+        />
+      </el-dialog>
     </el-form-item>
-    <el-form-item label="SPU销售属性" size="normal">
+    <el-form-item label="SPU销售属性">
       <!-- 展示销售属性的下拉菜单 -->
       <el-select>
         <el-option label="华为"></el-option>
@@ -97,6 +103,7 @@ import {
   reqSpuImageList,
 } from '@/api/product/spu'
 import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
 let $emit = defineEmits(['changeScene'])
 
 //取消按钮的回调
@@ -107,6 +114,10 @@ let MYAllTradeMark = ref<Trademark[]>([])
 let imgList = ref<SpuImg[]>([])
 let saleAttr = ref<SaleAttr[]>([])
 let allSaleAttr = ref<HasSaleAttr[]>([])
+//控制对话框的显示与隐藏
+let dialogVisible = ref<boolean>(false)
+//存储预览图片地址
+let dialogImageUrl = ref<string>('')
 
 //存储已有的SPU对象
 let SpuParams = ref<SpuData>({
@@ -121,6 +132,7 @@ let SpuParams = ref<SpuData>({
 //子组件书写一个方法
 const initHasSpuData = async (spu: SpuData) => {
   SpuParams.value = spu
+  console.log('获取传来的数据', spu)
   //spu:即为父组件传递过来的已有的SPU对象[不完整]
   //获取全部品牌的数据
   let result: AllTradeMark = await reqAllTradeMark()
@@ -145,9 +157,13 @@ const initHasSpuData = async (spu: SpuData) => {
   allSaleAttr.value = result3.data
 }
 
+// 存储预览图片地址
 // 点击文件列表中已上传的文件时的钩子
-const handlePictureCardPreview = () => {
-  console.log('点击上传后触发')
+const handlePictureCardPreview = (file: any) => {
+  dialogImageUrl.value = file.url
+
+  //对话框弹出来
+  dialogVisible.value = true
 }
 
 // 文件列表移除文件时的钩子
@@ -155,5 +171,29 @@ const handleRemove = () => {
   console.log('移除文件')
 }
 
+//照片钱上传成功之前的钩子约束文件的大小与类型
+const handlerUpload = (file: any) => {
+  if (
+    file.type == 'image/png' ||
+    file.type == 'image/jpeg' ||
+    file.type == 'image/gif'
+  ) {
+    if (file.size / 1024 / 1024 < 3) {
+      return true
+    } else {
+      ElMessage({
+        type: 'error',
+        message: '上传文件务必小于3M',
+      })
+      return false
+    }
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '上传文件务必PNG|JPG|GIF',
+    })
+    return false
+  }
+}
 defineExpose({ initHasSpuData })
 </script>
