@@ -62,7 +62,7 @@
           @size-change="changeSize"
         />
       </div>
-      <!--  添加SPU修改SPU子组件    -->
+      <!--  添加SPU修改SPU子F组件    -->
       <SpuForm
         v-show="scene == 1"
         @changeScene="changeScene"
@@ -135,11 +135,12 @@ const addSpu = () => {
 const changeScene = (num: number) => {
   //切换为场景1:添加与修改已有SPU结构->SpuForm
   scene.value = num
+  // 再次获取数据
+  getHasSpu()
 }
 
 //修改已有的SPU的按钮的回调
 const updateSpu = (row: SpuData) => {
-  1
   //切换为场景1:添加与修改已有SPU结构->SpuForm
   scene.value = 1
   //调用子组件实例方法获取完整已有的SPU的数据

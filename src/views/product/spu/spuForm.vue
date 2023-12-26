@@ -127,7 +127,14 @@
       </el-table>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" size="default">保存</el-button>
+      <el-button
+        type="primary"
+        size="default"
+        @click="save"
+        :disabled="saleAttr.length > 0 ? false : true"
+      >
+        保存
+      </el-button>
       <el-button type="primary" size="default" @click="cancel">取消</el-button>
     </el-form-item>
   </el-form>
@@ -146,6 +153,7 @@ import {
   Trademark,
 } from '@/api/product/spu/type.ts'
 import {
+  reqAddOrUpdateSpu,
   reqAllSaleAttr,
   reqAllTradeMark,
   reqSpuHasSaleAttr,
@@ -160,7 +168,9 @@ const cancel = () => {
   $emit('changeScene', 0)
 }
 let MYAllTradeMark = ref<Trademark[]>([])
+// 照片墙的数据
 let imgList = ref<SpuImg[]>([])
+// 销售属性的数据
 let saleAttr = ref<SaleAttr[]>([])
 let allSaleAttr = ref<HasSaleAttr[]>([])
 //控制对话框的显示与隐藏
@@ -170,7 +180,6 @@ let dialogImageUrl = ref<string>('')
 // 将来还未选择的销售属性的ID与属性值的名字
 let saleAttrIdAndValueName = ref<string>('')
 
-let saleAttrValue = ref<string>('')
 //存储已有的SPU对象
 let SpuParams = ref<SpuData>({
   category3Id: '', //收集三级分类的ID
@@ -321,6 +330,39 @@ const toLook = (row: SaleAttr) => {
   row.spuSaleAttrValueList.push(newSaleAttrValue)
   //切换为查看模式
   row.flag = false
+}
+
+//保存按钮的回调
+const save = async () => {
+  //整理参数
+  //发请求:添加SPU|更新已有的SPU
+  //成功
+  //失败
+  //1:照片墙的数据
+  SpuParams.value.spuImageList = imgList.value.map((item) => {
+    return {
+      imgName: item.name,
+      imgUrl: item?.response?.data || item.url,
+    }
+  })
+
+  //2:整理销售属性的数据
+  SpuParams.value.spuSaleAttrList = saleAttr.value
+  let result = await reqAddOrUpdateSpu(SpuParams.value)
+  if (result.code === 200) {
+    ElMessage({
+      type: 'success',
+      message: SpuParams.value.id ? '更新成功' : '添加成功',
+    })
+
+    //通知父组件切换场景为0
+    $emit('changeScene', 0)
+  } else {
+    ElMessage({
+      type: 'error',
+      message: SpuParams.value.id ? '更新失败' : '添加失败',
+    })
+  }
 }
 
 // 对外暴漏
