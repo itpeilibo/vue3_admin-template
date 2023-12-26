@@ -165,7 +165,7 @@ let $emit = defineEmits(['changeScene'])
 
 //取消按钮的回调
 const cancel = () => {
-  $emit('changeScene', 0)
+  $emit('changeScene', { flag: 0, params: 'update' })
 }
 let MYAllTradeMark = ref<Trademark[]>([])
 // 照片墙的数据
@@ -348,6 +348,7 @@ const save = async () => {
 
   //2:整理销售属性的数据
   SpuParams.value.spuSaleAttrList = saleAttr.value
+
   let result = await reqAddOrUpdateSpu(SpuParams.value)
   if (result.code === 200) {
     ElMessage({
@@ -356,7 +357,10 @@ const save = async () => {
     })
 
     //通知父组件切换场景为0
-    $emit('changeScene', 0)
+    $emit('changeScene', {
+      flag: 0,
+      params: SpuParams.value.id ? 'update' : 'add',
+    })
   } else {
     ElMessage({
       type: 'error',
@@ -365,6 +369,38 @@ const save = async () => {
   }
 }
 
+//添加一个新的SPU初始化请求方法
+const initAddSpu = async (c3Id: number | string) => {
+  // 清空数据
+  Object.assign(SpuParams.value, {
+    category3Id: '', //收集三级分类的ID
+    spuName: '', //SPU的名字
+    description: '', //SPU的描述
+    tmId: '', //品牌的ID
+    spuImageList: [],
+    spuSaleAttrList: [],
+  })
+  // 清空照片
+  imgList.value = []
+  // 清空销售属性
+  saleAttr.value = []
+  saleAttrIdAndValueName.value = ''
+  //存储三级分类的ID
+  SpuParams.value.category3Id = c3Id
+
+  //获取全部品牌的数据
+  let result: AllTradeMark = await reqAllTradeMark()
+
+  //获取整个项目全部SPU的销售属性
+  let result1: HasSaleAttrResponseData = await reqAllSaleAttr()
+
+  //存储全部品牌的数据
+  MYAllTradeMark.value = result.data
+
+  //存储全部的销售属性
+  allSaleAttr.value = result1.data
+}
+
 // 对外暴漏
-defineExpose({ initHasSpuData })
+defineExpose({ initHasSpuData, initAddSpu })
 </script>

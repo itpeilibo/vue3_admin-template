@@ -6,6 +6,7 @@ import {
   HasSaleAttrResponseData,
   HasSpuResponseData,
   SaleAttrResponseData,
+  SpuData,
   SpuHasImg,
 } from '@/api/product/spu/type.ts'
 
@@ -65,11 +66,11 @@ export const reqSpuHasSaleAttr = (spuId: number) => {
 //添加一个新的SPU的
 //更新已有的SPU接口
 //data:即为新增的SPU|或者已有的SPU对象
-export const reqAddOrUpdateSpu = (data: any) => {
+export const reqAddOrUpdateSpu = (data: SpuData) => {
   //如果SPU对象拥有ID,更新已有的SPU
   if (data.id) {
     return request.post<any, any>(API.UPDATESPU_URL, data)
   } else {
-    return request.post<any, any>(API.ADDSPU_URL)
+    return request.post<any, any>(API.ADDSPU_URL, data)
   }
 }

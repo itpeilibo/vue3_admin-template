@@ -8,6 +8,7 @@
           size="default"
           icon="Plus"
           :disabled="!categoryStore.c3Id"
+          @click="addSpu"
         >
           添加SPU
         </el-button>
@@ -129,14 +130,20 @@ const changeSize = () => {
 const addSpu = () => {
   //切换为场景1:添加与修改已有SPU结构->SpuForm
   scene.value = 1
+  spu.value.initAddSpu(categoryStore.c3Id)
 }
 
 //修改已有的SPU的按钮的回调
-const changeScene = (num: number) => {
+const changeScene = (obj: any) => {
   //切换为场景1:添加与修改已有SPU结构->SpuForm
-  scene.value = num
-  // 再次获取数据
-  getHasSpu()
+  scene.value = obj.flag
+  if (obj.params == 'update') {
+    // 更新留着当前页
+    getHasSpu(pageNo.value)
+  } else {
+    // 留着第一页
+    getHasSpu()
+  }
 }
 
 //修改已有的SPU的按钮的回调
