@@ -92,10 +92,26 @@
               style="margin: 0px 5px"
               v-for="(item, index) in row.spuSaleAttrValueList"
               :key="row.id"
+              closable
+              @close="row.spuSaleAttrValueList.splice(index, 1)"
             >
               {{ item.saleAttrValueName }}
             </el-tag>
-            <el-button type="primary" size="small" icon="Plus"></el-button>
+            <el-input
+              v-if="row.flag"
+              placeholder="请你输入属性值"
+              size="small"
+              style="width: 100px"
+              v-model="row.saleAttrValue"
+              @blur="toLook(row, $index)"
+            ></el-input>
+            <el-button
+              v-else
+              type="primary"
+              size="small"
+              icon="Plus"
+              @click="toEdit(row, $index)"
+            ></el-button>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="120px">
@@ -123,6 +139,7 @@ import {
   HasSaleAttrResponseData,
   SaleAttr,
   SaleAttrResponseData,
+  SaleAttrValue,
   SpuData,
   SpuHasImg,
   SpuImg,
@@ -153,12 +170,14 @@ let dialogImageUrl = ref<string>('')
 // 将来还未选择的销售属性的ID与属性值的名字
 let saleAttrIdAndValueName = ref<string>('')
 
+let saleAttrValue = ref<string>('')
 //存储已有的SPU对象
 let SpuParams = ref<SpuData>({
   category3Id: '', //收集三级分类的ID
   spuName: '', //SPU的名字
   description: '', //SPU的描述
   tmId: '', //品牌的ID
+  flag: false,
   spuImageList: [],
   spuSaleAttrList: [],
 })
@@ -166,7 +185,6 @@ let SpuParams = ref<SpuData>({
 //子组件书写一个方法
 const initHasSpuData = async (spu: SpuData) => {
   SpuParams.value = spu
-  console.log('获取传来的数据', spu)
   //spu:即为父组件传递过来的已有的SPU对象[不完整]
   //获取全部品牌的数据
   let result: AllTradeMark = await reqAllTradeMark()
@@ -259,6 +277,50 @@ const addSaleAttr = () => {
   saleAttr.value.push(newSaleAttr)
   //清空收集的数据
   saleAttrIdAndValueName.value = ''
+  //点击按钮的时候,input组件不就不出来->编辑模式
+}
+
+//属性值按钮的点击事件
+const toEdit = (row: SaleAttr) => {
+  row.flag = true
+  row.saleAttrValue = ''
+}
+
+// 表单元素失却焦点的事件回调
+const toLook = (row: SaleAttr) => {
+  // 整理收集的属性的ID与属性值的名字
+  const { baseSaleAttrId, saleAttrValue } = row
+  let newSaleAttrValue: SaleAttrValue = {
+    baseSaleAttrId,
+    saleAttrValueName: saleAttrValue as string,
+  }
+
+  // 非法情况判断
+  if ((saleAttrValue as string).trim() == '') {
+    ElMessage({
+      type: 'error',
+      message: '属性值不能为空的',
+    })
+    return
+  }
+
+  // 判断属性值是否在数组当中存在
+  let repeat = row.spuSaleAttrValueList.find((item) => {
+    return item.saleAttrValueName == saleAttrValue
+  })
+
+  if (repeat) {
+    ElMessage({
+      type: 'error',
+      message: '属性值重复',
+    })
+    return
+  }
+
+  // 追加新的属性值对象
+  row.spuSaleAttrValueList.push(newSaleAttrValue)
+  //切换为查看模式
+  row.flag = false
 }
 
 // 对外暴漏

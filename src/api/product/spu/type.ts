@@ -12,6 +12,7 @@ export interface SpuData {
   spuName: string
   tmId: number | string
   description: string
+  flag: boolean
   spuImageList: null | SpuImg[]
   spuSaleAttrList: null | SaleAttr[]
 }
